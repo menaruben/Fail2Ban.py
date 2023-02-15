@@ -2,11 +2,13 @@ import asyncio
 from winfw import *
 from FileHandling import *
 from TimeHandling import *
+import logging
 
 SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
 FailedLoginLimit = 3
 FailedLoginTime = 60        # seconds
 BanDuration = 90         # seconds
+logging.basicConfig(filename='..\\logs\Fail2Ban.log', encoding='utf-8', level=logging.DEBUG)
 
 def GetFailedHosts(FailedLines: list, MaxLogonAttemps: int) -> dict:
     FailedHosts = []
@@ -31,14 +33,17 @@ def CheckBanAge(dict: dict):
         if FreeDate <= GetDate():
             UnbannedHost = Host(host)
             UnbannedHost.UnbanIP()
+            logging.debug(f"{host} unbanned")
 
 async def main():
+    logging.info("Fail2Ban service started")
     PrevTimestamp = path.getmtime(SSHLOGS)
     PrevFileContent = ReadFile(SSHLOGS)
 
     SSHJail = {}        # IP, FreeDate
 
     while True:
+        logging.debug("New While-True loop started")
         await asyncio.sleep(FailedLoginTime)
         CurrentTimestamp = path.getmtime(SSHLOGS)
 
@@ -57,11 +62,12 @@ async def main():
             for host in FailedHosts:
                 BannedHost = Host(host)
                 BannedHost.BanIP()
+                logging.debug(f"{host} banned")
                 SSHJail[host] = GetFreeDate(BanDuration)
 
         CheckBanAge(SSHJail)
 
-        # tested until here works just fine :)
+    logging.info("Fail2Ban service stopped")
 
 if __name__ == "__main__":
     asyncio.run(main())
