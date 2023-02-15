@@ -70,9 +70,16 @@ the if-statement is true then it will get the current time and save it as the ne
 and the current file content with ```FileContentDiff()```. It will store all failed hosts to the SSHJail dictionary as a key with the value of the ```FreeDate``` or "release date"/"unban date". 
 After the if-statement it checks if there are any hosts which "served their sentence" and if they did then they will get unbanned with the ```CheckBanAge()``` function. 
 
-## run exe as windows service
-```c:
-sc create "Fail2Ban" binPath="<PATH TO>\Fail2Ban.exe"
+## run python script as windows service (NSSM)
+You will need to have [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) installed on your system in order to do this. To install NSSM extract the zip-Folder and navigate to ```nssm-2.24\win64``` inside your cmd terminal. If you type ```dir``` you should see a ```nssm.exe```. Now enter the following command:
 ```
-After you run this you should be able to see the Fail2Ban service in services. 
-![servicestab](./imgs/services.png)
+nssm install "Fail2Ban" "<PATH TO>\python.exe" "<PATH TO>\Fail2Ban.py\src\Fail2Ban.py"
+```
+The output should say ```Service "Fail2Ban" installed successfully!``` if there is not a service called Fail2Ban. 
+
+Now you can open Services and right-click "Fail2Ban". Now click on start and do a test the functionality. 
+
+If you want to remove a service just type (as administrator):
+```
+nssm remove "Fail2Ban"
+```
