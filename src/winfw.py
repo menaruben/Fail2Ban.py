@@ -18,7 +18,7 @@ class Host:
                     "-LocalPort", "Any",
                     "-Protocol", "TCP",
                     "-Action", "Block",
-                    "-RemoteAddress", f"{self.IPaddr}"
+                    "-RemoteAddress", f"{self.IPaddr}/24"
                 ]
             )
 
