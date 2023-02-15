@@ -69,3 +69,10 @@ The main function is asynchronous and runs every ```FailedLoginTime``` seconds. 
 the if-statement is true then it will get the current time and save it as the new previous timestamp of modification time and get the difference of the previous file content 
 and the current file content with ```FileContentDiff()```. It will store all failed hosts to the SSHJail dictionary as a key with the value of the ```FreeDate``` or "release date"/"unban date". 
 After the if-statement it checks if there are any hosts which "served their sentence" and if they did then they will get unbanned with the ```CheckBanAge()``` function. 
+
+## run exe as windows service
+```c:
+sc create "Fail2Ban" binPath="<PATH TO>\Fail2Ban.exe"
+```
+After you run this you should be able to see the Fail2Ban service in services. 
+![servicestab](./imgs/services.png)
