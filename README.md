@@ -3,11 +3,17 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 
 # Checklist / To-Do
 - [x] it bans IP addresses based on the amount of failed logins and timespan for a defined duration (tested)
-- [ ] it unbans IP adresses after checking the "age" or CreationTime of the firewall rule
-- [ ] it runs as a windows service
+- [x] it unbans IP adresses after checking the "age" or CreationTime of the firewall rule
+- [x] it runs as a windows service
+- [ ] add logging for script
+- [ ] store firewall rules and unban date to registry or xml file so that the SSHJail is saved even after restarting/stopping the script/service
+- [ ] installer (automate the creation of service)
 
 # Known bugs as of right now
 - None
+
+# Fixed errors
+- The firewall rule immediately deletes itself after creating it. (Changed FreeDate>=GetDate() to "<=")
 
 # Dependencies
 ## Modules
