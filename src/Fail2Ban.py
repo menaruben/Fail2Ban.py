@@ -3,9 +3,7 @@ from winfw import *
 from FileHandling import *
 from TimeHandling import *
 
-RegistryPath = "HKLM:\SOFTWARE\Fail2Ban"
 SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
-
 FailedLoginLimit = 3
 FailedLoginTime = 60        # seconds
 BanDuration = 90         # seconds
@@ -59,10 +57,11 @@ async def main():
             for host in FailedHosts:
                 BannedHost = Host(host)
                 BannedHost.BanIP()
-                # tested until here
                 SSHJail[host] = GetFreeDate(BanDuration)
 
         CheckBanAge(SSHJail)
+
+        # tested until here works just fine :)
 
 if __name__ == "__main__":
     asyncio.run(main())

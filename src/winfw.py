@@ -2,8 +2,6 @@ from os import path # used for getting file change timestamps and checking paths
 from subprocess import run # run powershell code for firewalls
 from TimeHandling import GetDate
 
-RegistryPath = "HKLM:\SOFTWARE\Fail2Ban"
-
 class Host:
     def __init__(self, IPaddr: str):
         self.IPaddr = IPaddr
