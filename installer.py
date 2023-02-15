@@ -5,7 +5,6 @@ import zipfile
 from os import path
 from subprocess import run
 from sys import exec_prefix
-import win32serviceutil
 
 # ! PLEASE CHANGE MAINPATH TO YOUR ACTUAL PATH
 mainpath = "C:\\repos\\Fail2Ban.py"
