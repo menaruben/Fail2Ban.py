@@ -80,7 +80,7 @@ You will need to have [NSSM - the Non-Sucking Service manager](https://nssm.cc/d
 ```
 nssm install "Fail2Ban.py" "<PATH TO>\python.exe" "<PATH TO>\Fail2Ban.py\src\Fail2Ban.py"
 ```
-The output should say ```Service "Fail2Ban.py" installed successfully!``` if there is not a service called Fail2Ban. Now you can open Services,  right-click "Fail2Ban.py" and start the service.
+The output should say ```Service "Fail2Ban.py" installed successfully!``` if there is not a service called "Fail2Ban.py". Now you can open Services,  right-click "Fail2Ban.py" and start the service.
 
 You can also get a status, start, stop, remove and restart services with the following commands:
 ```
