@@ -28,7 +28,7 @@ def GetFailedHosts(FailedLines: list, MaxLogonAttemps: int) -> dict:
 
 def CheckBanAge(dict: dict):
     for host, FreeDate in dict.items():
-        if FreeDate >= GetDate():
+        if FreeDate <= GetDate():
             UnbannedHost = Host(host)
             UnbannedHost.UnbanIP()
 

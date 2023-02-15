@@ -73,13 +73,13 @@ After the if-statement it checks if there are any hosts which "served their sent
 ## run python script as windows service (NSSM)
 You will need to have [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) installed on your system in order to do this. To install NSSM extract the zip-Folder and navigate to ```nssm-2.24\win64``` inside your cmd terminal. If you type ```dir``` you should see a ```nssm.exe```. Now enter the following command:
 ```
-nssm install "Fail2Ban" "<PATH TO>\python.exe" "<PATH TO>\Fail2Ban.py\src\Fail2Ban.py"
+nssm install "Fail2Ban.py" "<PATH TO>\python.exe" "<PATH TO>\Fail2Ban.py\src\Fail2Ban.py"
 ```
-The output should say ```Service "Fail2Ban" installed successfully!``` if there is not a service called Fail2Ban. 
+The output should say ```Service "Fail2Ban.py" installed successfully!``` if there is not a service called Fail2Ban. 
 
-Now you can open Services and right-click "Fail2Ban". Now click on start and do a test the functionality. 
+Now you can open Services and right-click "Fail2Ban.py". Now click on start and do a test the functionality. 
 
 If you want to remove a service just type (as administrator):
 ```
-nssm remove "Fail2Ban"
+nssm remove "Fail2Ban.py"
 ```
