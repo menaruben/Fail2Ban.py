@@ -78,24 +78,28 @@ After the if-statement it checks if there are any hosts which "served their sent
 
 ## manual installation of dependencies
 ### run python script as windows service (NSSM)
-You will need to have [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) installed on your system in order to do this. To install NSSM extract the zip-Folder and navigate to ```nssm-2.24\win64``` inside your cmd terminal. If you type ```dir``` you should see a ```nssm.exe```. Now enter the following command:
+You will need to have [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) installed on your system and add it to the path in order to do this. To install NSSM extract the zip-Folder and navigate to ```nssm-2.24\win64``` inside your cmd terminal. If you type ```dir``` you should see a ```nssm.exe```. Now enter the following command:
 ```
 nssm install "Fail2Ban.py" "<PATH TO>\python.exe" "<PATH TO>\Fail2Ban.py\src\Fail2Ban.py"
 ```
 The output should say ```Service "Fail2Ban.py" installed successfully!``` if there is not a service called Fail2Ban. Now you can open Services,  right-click "Fail2Ban.py" and start the service.
 
-If you want to remove a service just type (as administrator):
+You can also get a status, start, stop, remove and restart services with the following commands:
 ```
-nssm remove "Fail2Ban.py"
-```
+# get status
+nssm status <servicename>
 
-You can also start and stop a service with the following commands:
-```
 # start service
-nssm
+nssm start <servicename>
 
 # stop service
+nssm stop <servicename>
 
+# remove service
+nssm remove <servicename>
+
+# restart service
+nssm restart <servicename>
 ```
 
 ## [installer.py](installer.py)
