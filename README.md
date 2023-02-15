@@ -1,7 +1,7 @@
-# 1. Fail2Ban.py
+# Fail2Ban.py
 This project is about my own implementation of a Fail2Ban (SSH) service for Windows 10+. 
 
-# 2. Checklist / To-Do
+# 1. Checklist / To-Do
 - [x] it bans IP addresses based on the amount of failed logins and timespan for a defined duration (tested)
 - [x] it unbans IP adresses after checking the "age" or CreationTime of the firewall rule
 - [x] it runs as a windows service
@@ -9,11 +9,10 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 - [ ] store firewall rules and unban date to registry or xml file so that the SSHJail is saved even after restarting/stopping the script/service
 - [x] installer (automate the creation of service)
 
-# 3 Known bugs as of right now
+# 2 Known bugs as of right now
 - None
 
-# 4.0 Dependencies
-## 4.1 Modules/Commandline tools
+# 3 Dependencies
 - Module: asyncio (used for asynchronous functions)
 - Module: re (used for splitting an array into fields)
 - Module: difflib (used for getting the difference between the previous and the current sshlogs)
@@ -21,8 +20,8 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 - Module: wget
 - Commandline tool: [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) (used for creating a service for our python script)
 
-# 5.0 Documentation
-## 5.1 constants
+# 4 Documentation
+## constants
 ```python:
 SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
 FailedLoginLimit = 3
@@ -34,7 +33,7 @@ BanDuration = 90            # seconds
 - FailedLoginTime: Defines the time period in which the max failed login tries have to occur (the main() function also runs in this frequency)
 - BanDuration: Defines the duration of the ban
 
-## 5.2 main()
+## main()
 ```python:
 async def main():
     PrevTimestamp = path.getmtime(SSHLOGS)
@@ -73,8 +72,7 @@ the if-statement is true then it will get the current time and save it as the ne
 and the current file content with ```FileContentDiff()```. It will store all failed hosts to the SSHJail dictionary as a key with the value of the ```FreeDate``` or "release date"/"unban date". 
 After the if-statement it checks if there are any hosts which "served their sentence" and if they did then they will get unbanned with the ```CheckBanAge()``` function. 
 
-## 5.3 manual installation of dependencies
-### 5.3.1 run python script as windows service (NSSM)
+## run python script as windows service (NSSM)
 You will need to have [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) installed on your system and add it to the path in order to do this. To install NSSM extract the zip-Folder and navigate to ```nssm-2.24\win64``` inside your cmd terminal. If you type ```dir``` you should see a ```nssm.exe```. Now enter the following command:
 ```
 nssm install "Fail2Ban.py" "<PATH TO>\python.exe" "<PATH TO>\Fail2Ban.py\src\Fail2Ban.py"
@@ -99,5 +97,5 @@ nssm remove <servicename>
 nssm restart <servicename>
 ```
 
-## 5.4 automated installation with [installer.py](installer.py)
+## automated installation with [installer.py](installer.py)
 If you don't want to install everything by hand then feel free to use the installer. Before you run the installer please make sure to change the ```mainpath``` variable to your repository path. The installer will install [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) and create a service called "Fail2Ban.py".
