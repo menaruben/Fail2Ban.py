@@ -5,9 +5,8 @@ from TimeHandling import GetDate
 RegistryPath = "HKLM:\SOFTWARE\Fail2Ban"
 
 class Host:
-    def __init__(self, IPaddr: str, RuleName):
+    def __init__(self, IPaddr: str):
         self.IPaddr = IPaddr
-        self.RuleName = RuleName
 
 # powershell New-NetFirewallRule -Name {RuleName} -DisplayName {RuleName} -Direction Outbound -LocalPort Any -Protocol TCP -Action Block -RemoteAddress {IPaddr}
     def BanIP(self):
@@ -16,7 +15,7 @@ class Host:
                 [
                     "powershell",
                     "New-NetFirewallRule",
-                    "-Name", f"{self.RuleName}", "-DisplayName", f"{self.RuleName}",
+                    "-Name", f"{self.IPaddr}", "-DisplayName", f"{self.IPaddr}",
                     "-Direction", "Outbound",
                     "-LocalPort", "Any",
                     "-Protocol", "TCP",
@@ -34,7 +33,7 @@ class Host:
         try:
             run(
                 [
-                    "powershell", "Remove-NetFirewallRule", "-Name", f"{self.RuleName}"
+                    "powershell", "Remove-NetFirewallRule", "-Name", f"{self.IPaddr}"
                 ]
             )
 

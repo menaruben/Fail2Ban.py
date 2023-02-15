@@ -8,7 +8,7 @@ SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
 
 FailedLoginLimit = 3
 FailedLoginTime = 60        # seconds
-BanDuration = 600           # seconds
+BanDuration = 90         # seconds
 
 def GetFailedHosts(FailedLines: list, MaxLogonAttemps: int) -> dict:
     FailedHosts = []
@@ -31,11 +31,10 @@ def GetFailedHosts(FailedLines: list, MaxLogonAttemps: int) -> dict:
 def CheckBanAge(dict: dict):
     for host, FreeDate in dict.items():
         if FreeDate >= GetDate():
-            UnbannedHost = Host(host, f"Fail2Ban {host}")
+            UnbannedHost = Host(host)
             UnbannedHost.UnbanIP()
 
 async def main():
-    
     PrevTimestamp = path.getmtime(SSHLOGS)
     PrevFileContent = ReadFile(SSHLOGS)
 
@@ -50,18 +49,20 @@ async def main():
 
             CurrentFileContent = ReadFile(SSHLOGS)
             FileContentDiff = GetContentDiff(PrevFileContent, CurrentFileContent, SSHLOGS)
+            PrevFileContent = CurrentFileContent
 
             FailedLines = GetFailedLines(FileContentDiff, "Failed password for")
 
             FailedHosts = GetFailedHosts(FailedLines, FailedLoginLimit)
-            # tested until here
+
 
             for host in FailedHosts:
-                BannedHost = Host(host, f"Fail2Ban {host}")
+                BannedHost = Host(host)
                 BannedHost.BanIP()
-                SSHJail[host] = GetFreeDate()
+                # tested until here
+                SSHJail[host] = GetFreeDate(BanDuration)
 
-        CheckBanAge(SSHJail)     
+        CheckBanAge(SSHJail)
 
 if __name__ == "__main__":
     asyncio.run(main())
