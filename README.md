@@ -16,15 +16,14 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 - The firewall rule immediately deletes itself after creating it. (Changed FreeDate>=GetDate() to "<=")
 
 # Dependencies
-## Modules
+## Modules/Commandline tools
 - asyncio (used for asynchronous functions)
 - re (used for splitting an array into fields)
 - difflib (used for getting the difference between the previous and the current sshlogs)
 - datetime (self explanatory)
+- [NSSM - the Non-Sucking Service manager](https://nssm.cc/download)
 
-Note: pywin32 will be needed in the near future in order to run the script as a windows service. 
-
-# documentation
+# Documentation
 ## constants
 ```python:
 SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
