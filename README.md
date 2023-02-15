@@ -7,7 +7,7 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 - [x] it runs as a windows service
 - [ ] add logging for script
 - [ ] store firewall rules and unban date to registry or xml file so that the SSHJail is saved even after restarting/stopping the script/service
-- [ ] installer (automate the creation of service)
+- [x] installer (automate the creation of service)
 
 # Known bugs as of right now
 - None
@@ -17,11 +17,12 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 
 # Dependencies
 ## Modules/Commandline tools
-- asyncio (used for asynchronous functions)
-- re (used for splitting an array into fields)
-- difflib (used for getting the difference between the previous and the current sshlogs)
-- datetime (self explanatory)
-- [NSSM - the Non-Sucking Service manager](https://nssm.cc/download)
+- Module: asyncio (used for asynchronous functions)
+- Module: re (used for splitting an array into fields)
+- Module: difflib (used for getting the difference between the previous and the current sshlogs)
+- Module: datetime (self explanatory)
+- Module: wget
+- Commandline tool: [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) (used for creating a service for our python script)
 
 # Documentation
 ## constants
@@ -75,16 +76,27 @@ the if-statement is true then it will get the current time and save it as the ne
 and the current file content with ```FileContentDiff()```. It will store all failed hosts to the SSHJail dictionary as a key with the value of the ```FreeDate``` or "release date"/"unban date". 
 After the if-statement it checks if there are any hosts which "served their sentence" and if they did then they will get unbanned with the ```CheckBanAge()``` function. 
 
-## run python script as windows service (NSSM)
+## manual installation of dependencies
+### run python script as windows service (NSSM)
 You will need to have [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) installed on your system in order to do this. To install NSSM extract the zip-Folder and navigate to ```nssm-2.24\win64``` inside your cmd terminal. If you type ```dir``` you should see a ```nssm.exe```. Now enter the following command:
 ```
 nssm install "Fail2Ban.py" "<PATH TO>\python.exe" "<PATH TO>\Fail2Ban.py\src\Fail2Ban.py"
 ```
-The output should say ```Service "Fail2Ban.py" installed successfully!``` if there is not a service called Fail2Ban. 
-
-Now you can open Services and right-click "Fail2Ban.py". Now click on start and do a test the functionality. 
+The output should say ```Service "Fail2Ban.py" installed successfully!``` if there is not a service called Fail2Ban. Now you can open Services,  right-click "Fail2Ban.py" and start the service.
 
 If you want to remove a service just type (as administrator):
 ```
 nssm remove "Fail2Ban.py"
 ```
+
+You can also start and stop a service with the following commands:
+```
+# start service
+nssm
+
+# stop service
+
+```
+
+## [installer.py](installer.py)
+If you don't want to install everything by hand then feel free to use the installer. Before you run the installer please make sure to change the ```mainpath``` variable to your repository path. The installer will install [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) and create a service called "Fail2Ban.py".
