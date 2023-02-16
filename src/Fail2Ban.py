@@ -2,6 +2,7 @@ import asyncio
 from winfw import *
 from FileHandling import *
 from TimeHandling import *
+from XmlHanlding import *
 import logging
 
 SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
@@ -66,6 +67,8 @@ async def main():
                 SSHJail[host] = GetFreeDate(BanDuration)
 
         CheckBanAge(SSHJail)
+        DictToXml(SSHJail, 'SSHJail.xml')
+        logging.debug(f'SSHJail Content: {SSHJail}')
 
     logging.info("Fail2Ban service stopped")
 
