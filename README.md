@@ -16,12 +16,26 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 - None
 
 # 3 Dependencies
+- python (of course)
 - Module: asyncio (used for asynchronous functions)
 - Module: re (used for splitting an array into fields)
 - Module: difflib (used for getting the difference between the previous and the current sshlogs)
 - Module: datetime (self explanatory)
 - Module: wget
 - Commandline tool: [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) (used for creating a service for our python script)
+
+## sshd_config
+In order to have the sshd.log file the service needs you have to configure sshd. In the future this job will be done via the installer but for now we'll have to configure it manually. Go to ```%programdata%\ssh``` and open the ```sshd_config``` file. Now change the Logging part to this:
+```
+# Logging
+SyslogFacility LOCAL0
+LogLevel Debug3
+```
+Now save and restart the OpenSSH Server with the following PowerShell command:
+```
+net stop sshd
+net start sshd
+```
 
 # 4 Documentation
 ## constants
