@@ -69,7 +69,7 @@ async def main():
                 logging.debug(f"{host} banned")
                 SSHJail[host] = GetFreeDate(BanDuration)
 
-        DictToXml(SSHJail, f'{script_path}\SSHJail.xml')
+        DictToXml(SSHJail, f'{script_path}\src\SSHJail.xml')
         CheckBanAge(SSHJail)
 
 if __name__ == "__main__":

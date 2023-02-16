@@ -10,7 +10,7 @@ except:
     system("pip install wget")
     import wget
 
-mainpath = input("Please enter current working directory: ")
+mainpath = path.dirname(path.abspath(__file__))
 
 pathtomain = f"src\\Fail2Ban.py"
 pythonpath = exec_prefix
