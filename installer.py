@@ -1,21 +1,27 @@
-# install latest nssm, extract zip and create service
-# ! PLEASE RUN INSTALLER FROM MAINPATH
-import wget
+# install latest nssm, extract zip, create service and run service
+# ! YOU MUST RUN THE INSTALLER AS ADMINISTRATOR
 import zipfile
-from os import path
+from os import path, system, chdir
 from subprocess import run
 from sys import exec_prefix
+try:
+    import wget
+except:
+    system("pip install wget")
+    import wget
 
-# ! PLEASE CHANGE MAINPATH TO YOUR ACTUAL PATH
-mainpath = "C:\\repos\\Fail2Ban.py"
+mainpath = input("Please enter current working directory: ")
 
-pathtomain = f"{mainpath}\\src\\Fail2Ban.py"
+pathtomain = f"src\\Fail2Ban.py"
 pythonpath = exec_prefix
-ServiceName = "Fail2Ban2.py"
+ServiceName = "Fail2Ban.py"
 NssmName = "nssm-2.24"
 DownloadNSSM = f"https://nssm.cc/release/{NssmName}.zip"
+nssm = f"{NssmName}\\win64\\nssm.exe"
 
-if path.exists(f"{mainpath}\\{NssmName}") == False:
+chdir(mainpath)
+
+if path.exists(f"{NssmName}") == False:
     try:
         wget.download(DownloadNSSM)
 
@@ -32,7 +38,7 @@ if path.exists(f"{mainpath}\\{NssmName}") == False:
 try:
     run(
         [
-            f"{NssmName}\\win64\\nssm.exe", "install", f"{ServiceName}",
+            f"{nssm}", "install", f"{ServiceName}",
             f"{pythonpath}", f"{pathtomain}"
         ]
     )
@@ -40,3 +46,6 @@ try:
 except Exception as e:
     print(e)
     print("Error creating service")
+
+print(f"You can now start the {ServiceName} service!")
+print("----------- installer is finished -----------")

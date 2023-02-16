@@ -2,7 +2,7 @@ import asyncio
 from winfw import *
 from FileHandling import *
 from TimeHandling import *
-from XmlHanlding import *
+from XmlHandling import *
 import logging
 
 SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"

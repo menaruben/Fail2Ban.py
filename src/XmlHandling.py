@@ -1,10 +1,4 @@
 import xml.etree.ElementTree as ET
-
-SSHJail = {
-'Host1': '01.01.2023',
-'Host2': '02.02.2023'
-}
-
 # <SSHJail><Host ip="Host1" freedate="01.01.2023" /><Host ip="Host2" freedate="02.02.2023" /><Host ip="Host3" freedate="03.03.2023" /></SSHJail>
 
 def DictToXml(dictionary: dict, path: str) -> None:
