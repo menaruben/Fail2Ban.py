@@ -17,7 +17,7 @@ def DictToXml(dictionary: dict, path: str) -> None:
     # write the ElementTree object to an XML file
     tree.write(path)
 
-DictToXml(SSHJail, 'SSHJail.xml')
+# DictToXml(SSHJail, 'SSHJail.xml')
 
 def RemoveFromXml(path: str, subelement_name: str, attribute_name: str, value: str) -> None:
     # parse the XML file and get the root element
