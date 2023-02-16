@@ -9,7 +9,7 @@ SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
 FailedLoginLimit = 3
 FailedLoginTime = 60        # seconds
 BanDuration = 90         # seconds
-logging.basicConfig(filename='..\\logs\Fail2Ban.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='logs\Fail2Ban.log', encoding='utf-8', level=logging.DEBUG)
 
 def GetFailedHosts(FailedLines: list, MaxLogonAttemps: int) -> dict:
     FailedHosts = []
