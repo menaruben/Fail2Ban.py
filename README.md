@@ -7,13 +7,18 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 # 1. Checklist / To-Do
 - [x] it bans IP addresses based on the amount of failed logins and timespan for a defined duration (tested)
 - [x] it unbans IP adresses after checking the "age" or CreationTime of the firewall rule
-- [x] it runs as a windows service
+- [ ] it runs as a windows service without any problem
 - [x] add logging for script
 - [ ] store firewall rules and unban date to registry or xml file so that the SSHJail is saved even after restarting/stopping the script/service
 - [x] installer (automate the creation of service)
+- [ ] full documentation for manual and automated installation/configuration with screenshots
 
-# 2 Known bugs as of right now
-- None
+# 2 Known bugs/errors as of right now
+- Fail2Ban.py isn't able to start as a service.
+    - I am currently working on fixing this issue but for now I'm prioritizing the functionality of the script overall. I will fully focus on fixing this issue after making it run as expected.
+
+- Fail2Ban.py stops after banning the first IP-address.
+    - This probably occurs because I have been trying to save the FreeDate (which is a datetime) and save it to an xml file without converting it to a string beforehand. I am currently working on this error.
 
 # 3 Dependencies
 - python (of course)

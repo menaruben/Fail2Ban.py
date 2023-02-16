@@ -7,11 +7,16 @@ import logging
 from os import path
 
 SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
+F2BLOGS = "C:/ProgramData/ssh/logs/Fail2Ban.log"
 FailedLoginLimit = 3
 FailedLoginTime = 60        # seconds
 BanDuration = 90         # seconds
 script_path = path.dirname(path.abspath(__name__))
-logging.basicConfig(filename='logs\Fail2Ban.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename=F2BLOGS,
+                    format='%(asctime)s %(levelname)-8s %(message)s',
+                    encoding='utf-8',
+                    level=logging.DEBUG,
+                    datefmt='%Y-%m-%d %H:%M:%S')
 
 def GetFailedHosts(FailedLines: list, MaxLogonAttemps: int) -> dict:
     FailedHosts = []
@@ -40,6 +45,9 @@ def CheckBanAge(dict: dict):
             logging.debug(f"{host} unbanned and removed from sshjail")
 
 async def main():
+    f = open(F2BLOGS, "w")
+    f.close()
+
     logging.info("Fail2Ban service started")
     PrevTimestamp = path.getmtime(SSHLOGS)
     PrevFileContent = ReadFile(SSHLOGS)

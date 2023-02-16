@@ -11,6 +11,7 @@ except:
     import wget
 
 mainpath = path.dirname(path.abspath(__name__))
+chdir(mainpath)
 
 pathtomain = f"src\\Fail2Ban.py"
 pythonpath = exec_prefix
@@ -18,8 +19,6 @@ ServiceName = "Fail2Ban.py"
 NssmName = "nssm-2.24"
 DownloadNSSM = f"https://nssm.cc/release/{NssmName}.zip"
 nssm = f"{NssmName}\\win64\\nssm.exe"
-
-chdir(mainpath)
 
 if path.exists(f"{NssmName}") == False:
     try:
