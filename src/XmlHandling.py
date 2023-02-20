@@ -1,5 +1,7 @@
 import xml.etree.ElementTree as ET
 # <SSHJail><Host ip="Host1" freedate="01.01.2023" /><Host ip="Host2" freedate="02.02.2023" /><Host ip="Host3" freedate="03.03.2023" /></SSHJail>
+date_format = '%Y-%m-%d %H:%M:%S.%f'
+from datetime import datetime
 
 def DictToXml(dictionary: dict, path: str) -> None:
     # create the root element
@@ -9,7 +11,7 @@ def DictToXml(dictionary: dict, path: str) -> None:
     for host, date in dictionary.items():
         subelement = ET.SubElement(root, 'Host')
         subelement.set('ip', host)
-        subelement.set('freedate', date)
+        subelement.set('freedate', str(date))
 
     # create an ElementTree object with the root element
     tree = ET.ElementTree(root)
@@ -18,6 +20,25 @@ def DictToXml(dictionary: dict, path: str) -> None:
     tree.write(path)
 
 # DictToXml(SSHJail, 'SSHJail.xml')
+
+
+def XmlToDict(path: str) -> dict:
+    # create an empty dictionary
+    dictionary = {}
+
+    # parse the XML file and get the root element
+    tree = ET.parse(path)
+    root = tree.getroot()
+
+    # iterate over each Host element and add it to the dictionary
+    for element in root.findall('Host'):
+        host = element.get('ip')
+        date = element.get('freedate')
+        dictionary[host] = datetime.strptime(date, date_format)
+
+    return dictionary
+
+# XmlToDict("SSHJail.xml")
 
 def RemoveFromXml(path: str, subelement_name: str, attribute_name: str, value: str) -> None:
     # parse the XML file and get the root element

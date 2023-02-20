@@ -42,6 +42,7 @@ def CheckBanAge(dict: dict):
             UnbannedHost = Host(host)
             UnbannedHost.UnbanIP()
             del dict[host]
+            RemoveFromXml(f'{script_path}\src\SSHJail.xml', "Host", "ip", host)
             logging.debug(f"{host} unbanned and removed from sshjail")
 
 async def main():
@@ -52,7 +53,10 @@ async def main():
     PrevTimestamp = path.getmtime(SSHLOGS)
     PrevFileContent = ReadFile(SSHLOGS)
 
-    SSHJail = {}        # IP, FreeDate
+    if path.exists('{script_path}\src\SSHJail.xml'):
+        SSHJail = XmlToDict(f'{script_path}\src\SSHJail.xml')
+    else:
+        SSHJail = {}        # IP, FreeDate
 
     while True:
         logging.debug("New While-True loop started")
@@ -77,8 +81,8 @@ async def main():
                 logging.debug(f"{host} banned")
                 SSHJail[host] = GetFreeDate(BanDuration)
 
-        DictToXml(SSHJail, f'{script_path}\src\SSHJail.xml')
         CheckBanAge(SSHJail)
+        DictToXml(SSHJail, f'{script_path}\src\SSHJail.xml')
 
 if __name__ == "__main__":
     asyncio.run(main())
