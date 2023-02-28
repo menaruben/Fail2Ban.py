@@ -60,7 +60,7 @@ async def main():
     PrevTimestamp = path.getmtime(SSHLOGS)
     PrevFileContent = ReadFile(SSHLOGS)
 
-    if path.exists('{script_path}\src\Fail2Ban.db'):
+    if path.exists(f'{script_path}\src\{DbName}'):
         SSHJail = TableToDict(conn)
     else:
         cur.execute(f"CREATE TABLE IF NOT EXISTS {TableName} (host text, freedate text)")
