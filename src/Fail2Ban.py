@@ -7,7 +7,7 @@ import logging
 from os import path
 
 TableName = "sshjail"
-DbName = "Fail2ban.db"
+DbName = "Fail2Ban.db"
 conn = sqlite3.connect(f"{DbName}")
 cur = conn.cursor()
 
