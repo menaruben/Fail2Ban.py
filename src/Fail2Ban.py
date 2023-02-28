@@ -2,15 +2,22 @@ import asyncio
 from winfw import *
 from FileHandling import *
 from TimeHandling import *
-from XmlHandling import *
+from DataHandling import *
 import logging
 from os import path
 
+TableName = "sshjail"
+DbName = "Fail2ban.db"
+conn = sqlite3.connect(f"{DbName}")
+cur = conn.cursor()
+
 SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
 F2BLOGS = "C:/ProgramData/ssh/logs/Fail2Ban.log"
+
 FailedLoginLimit = 3
-FailedLoginTime = 60        # seconds
+FailedLoginTime = 10        # seconds
 BanDuration = 90         # seconds
+
 script_path = path.dirname(path.abspath(__name__))
 logging.basicConfig(filename=F2BLOGS,
                     format='%(asctime)s %(levelname)-8s %(message)s',
@@ -41,8 +48,8 @@ def CheckBanAge(dict: dict):
         if FreeDate <= GetDate():
             UnbannedHost = Host(host)
             UnbannedHost.UnbanIP()
+            RemoveFromSQL(conn, host, str(dict[host]))
             del dict[host]
-            RemoveFromXml(f'{script_path}\src\SSHJail.xml', "Host", "ip", host)
             logging.debug(f"{host} unbanned and removed from sshjail")
 
 async def main():
@@ -53,9 +60,10 @@ async def main():
     PrevTimestamp = path.getmtime(SSHLOGS)
     PrevFileContent = ReadFile(SSHLOGS)
 
-    if path.exists('{script_path}\src\SSHJail.xml'):
-        SSHJail = XmlToDict(f'{script_path}\src\SSHJail.xml')
+    if path.exists('{script_path}\src\Fail2Ban.db'):
+        SSHJail = TableToDict(conn)
     else:
+        cur.execute(f"CREATE TABLE IF NOT EXISTS {TableName} (host text, freedate text)")
         SSHJail = {}        # IP, FreeDate
 
     while True:
@@ -80,9 +88,10 @@ async def main():
                 BannedHost.BanIP()
                 logging.debug(f"{host} banned")
                 SSHJail[host] = GetFreeDate(BanDuration)
+                WriteToSQL(conn, host, str(GetFreeDate(BanDuration)))
 
         CheckBanAge(SSHJail)
-        DictToXml(SSHJail, f'{script_path}\src\SSHJail.xml')
+        # DictToXml(SSHJail, f'{script_path}\src\SSHJail.xml')
 
 if __name__ == "__main__":
     asyncio.run(main())
