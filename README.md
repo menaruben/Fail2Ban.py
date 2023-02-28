@@ -43,118 +43,55 @@ net start sshd
 ```
 
 # 4 Documentation
-## constants
+## functions
+### GetFailedHosts
+The GetFailedHosts from [Fail2Ban.py](./src/Fail2Ban.py) returns all the FailedHosts inside the FailedLines and stores them inside of an array.
 ```python:
-SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
-FailedLoginLimit = 3
-FailedLoginTime = 60        # seconds
-BanDuration = 90            # seconds
-```
-- SSHLOGS: Defines the path to the sshd.log file.
-- FailedLoginLimit: Defines the max amount of login tries a host has
-- FailedLoginTime: Defines the time period in which the max failed login tries have to occur (the main() function also runs in this frequency)
-- BanDuration: Defines the duration of the ban
-
-## main()
-```python:
-import asyncio
-from winfw import *
-from FileHandling import *
-from TimeHandling import *
-from DataHandling import *
-import logging
-from os import path
-
-TableName = "sshjail"
-DbName = "Fail2ban.db"
-conn = sqlite3.connect(f"{DbName}")
-cur = conn.cursor()
-
-SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"
-F2BLOGS = "C:/ProgramData/ssh/logs/Fail2Ban.log"
-
-FailedLoginLimit = 3
-FailedLoginTime = 10        # seconds
-BanDuration = 90         # seconds
-
-script_path = path.dirname(path.abspath(__name__))
-logging.basicConfig(filename=F2BLOGS,
-                    format='%(asctime)s %(levelname)-8s %(message)s',
-                    encoding='utf-8',
-                    level=logging.DEBUG,
-                    datefmt='%Y-%m-%d %H:%M:%S')
-
 def GetFailedHosts(FailedLines: list, MaxLogonAttemps: int) -> dict:
-    FailedHosts = []
+    FailedHosts = []                            # array in which FailedHosts (IP) are stored
     for line in FailedLines:
-        fields = line.split(" ")
-        FailedHosts.append(fields[-4])
+        fields = line.split(" ")                # splits line into fields at " "
+        FailedHosts.append(fields[-4])          # parses out IP from sshd.log file
 
-    FailedHosts_counts = {}
+    FailedHosts_counts = {}                     # dictionary for storing amount of times these hosts have failed
     for FailedHost in set(FailedHosts):
-        count = FailedHosts.count(FailedHost)
-        FailedHosts_counts[FailedHost] = count
+        count = FailedHosts.count(FailedHost)   # counts amount of times the IP occurs inside the FailedHosts array
+        FailedHosts_counts[FailedHost] = count  # stores amount of times per IP to dictionary
 
     for Host, count in FailedHosts_counts.items():
-        if count < MaxLogonAttemps:
-            FailedHosts = RemoveItem(FailedHosts, Host)
+        if count < MaxLogonAttemps:                         # if amount of failed logins is smaller than MaxLogonAttempts-times then..
+            FailedHosts = RemoveItem(FailedHosts, Host)     # remove it from FailedHosts array
 
-    FailedHosts = RemoveDuplicates(FailedHosts)
+    FailedHosts = RemoveDuplicates(FailedHosts) # remove duplicates from FailedHosts array
     return FailedHosts
-
+```
+## CheckBanAge
+CheckBanAge from [Fail2Ban.py](./src/Fail2Ban.py) unbans hosts if the FreeDate (release date) is less or equal to the current date.
+```python:
 def CheckBanAge(dict: dict):
     for host, FreeDate in dict.items():
-        if FreeDate <= GetDate():
-            UnbannedHost = Host(host)
-            UnbannedHost.UnbanIP()
-            RemoveFromSQL(conn, host, str(dict[host]))
-            del dict[host]
+        if FreeDate <= GetDate():                       # compares if FreeDate of every host inside the dictionary is less or equal to current date and if true then..
+            UnbannedHost = Host(host)                   # add unbanned host to Host class and..
+            UnbannedHost.UnbanIP()                      # unban the host
+            RemoveFromSQL(conn, host, str(dict[host]))  # remove host from sql table
+            del dict[host]                              # delete host from table
             logging.debug(f"{host} unbanned and removed from sshjail")
-
-async def main():
-    f = open(F2BLOGS, "w")
-    f.close()
-
-    logging.info("Fail2Ban service started")
-    PrevTimestamp = path.getmtime(SSHLOGS)
-    PrevFileContent = ReadFile(SSHLOGS)
-
-    if path.exists('{script_path}\src\Fail2Ban.db'):
-        SSHJail = TableToDict(conn)
-    else:
-        cur.execute(f"CREATE TABLE IF NOT EXISTS {TableName} (host text, freedate text)")
-        SSHJail = {}        # IP, FreeDate
-
-    while True:
-        logging.debug("New While-True loop started")
-        await asyncio.sleep(FailedLoginTime)
-        CurrentTimestamp = path.getmtime(SSHLOGS)
-
-        if CurrentTimestamp != PrevTimestamp:
-            PrevTimestamp = CurrentTimestamp
-
-            CurrentFileContent = ReadFile(SSHLOGS)
-            FileContentDiff = GetContentDiff(PrevFileContent, CurrentFileContent, SSHLOGS)
-            PrevFileContent = CurrentFileContent
-
-            FailedLines = GetFailedLines(FileContentDiff, "Failed password for")
-
-            FailedHosts = GetFailedHosts(FailedLines, FailedLoginLimit)
-
-
-            for host in FailedHosts:
-                BannedHost = Host(host)
-                BannedHost.BanIP()
-                logging.debug(f"{host} banned")
-                SSHJail[host] = GetFreeDate(BanDuration)
-                WriteToSQL(conn, host, str(GetFreeDate(BanDuration)))
-
-        CheckBanAge(SSHJail)
-        # DictToXml(SSHJail, f'{script_path}\src\SSHJail.xml')
-
-if __name__ == "__main__":
-    asyncio.run(main())
 ```
+## TableToDict
+TableToDict from [Fail2Ban.py](./src/DataHandling.py) imports the data of the SQL table to the SSHJail dictionary (to prevent loss banned hosts after restart of service).
+```python:
+def TableToDict(conn):
+    cur = conn.cursor()
+    rows = cur.execute(f"SELECT * FROM {TableName}")
+    dict = {}
+    for row in rows:
+        dict[row[0]]= strptime(row[1], date_format)
+
+    return dict
+```
+
+... documentation for all functions is coming soon ...
+
 The main function is asynchronous and runs every ```FailedLoginTime``` seconds. While True it checks if the modification time of the ```sshd.log``` file has changed. If 
 the if-statement is true then it will get the current time and save it as the new previous timestamp of modification time and get the difference of the previous file content 
 and the current file content with ```FileContentDiff()```. It will store all failed hosts to the SSHJail dictionary as a key with the value of the ```FreeDate``` or "release date"/"unban date". 
