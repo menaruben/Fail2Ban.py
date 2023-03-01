@@ -52,8 +52,7 @@ def GetFailedHosts(FailedLines: list, MaxLogonAttemps: int) -> dict:
 def CheckBanAge(dict: dict):
     for host, FreeDate in dict.items():
         if FreeDate <= GetDate():                       # compares if FreeDate of every host inside the dictionary is less or equal to current date and if true then..
-            UnbannedHost = Host(host)                   # add unbanned host to Host class and..
-            UnbannedHost.UnbanIP()                      # unban the host
+            UnbanIP(host)                                   # unban the host
             RemoveFromSQL(conn, host, str(dict[host]))  # remove host from sql table
             del dict[host]                              # delete host from table
             logging.debug(f"{host} unbanned and removed from sshjail")
@@ -84,14 +83,13 @@ async def main():
             FileContentDiff = GetContentDiff(PrevFileContent, CurrentFileContent, SSHLOGS)  # gets difference between the previous and current content
             PrevFileContent = CurrentFileContent    # previous file content is now equal to the current file content
 
-            FailedLines = GetFailedLines(FileContentDiff, "Failed password for")    # GetFailedLines returns and stores all failed lines inside file difference to FailedLines array
+            FailedLines = GetFailedLines(FileContentDiff, "Failed password for")    # GetFailedLines  returns and stores all failed lines inside file difference to FailedLines array
 
             FailedHosts = GetFailedHosts(FailedLines, FailedLoginLimit)             # stores all failed hosts that exceeded the FailedLoginLimit to FailedHosts array
 
             # For-Loop iterates through FailedHosts array and bans all the hosts
             for host in FailedHosts:
-                BannedHost = Host(host)                                 # add host to Host class
-                BannedHost.BanIP()                                      # bans host
+                BanIP(host)                                             # bans host
                 logging.debug(f"{host} banned")
                 SSHJail[host] = GetFreeDate(BanDuration)                # get release date for host
                 WriteToSQL(conn, host, str(GetFreeDate(BanDuration)))   # store banned host their freedate to sql table

@@ -2,39 +2,35 @@ from os import path # used for getting file change timestamps and checking paths
 from subprocess import run # run powershell code for firewalls
 from TimeHandling import GetDate
 
-class Host:
-    def __init__(self, IPaddr: str):
-        self.IPaddr = IPaddr
-
 # powershell New-NetFirewallRule -Name {RuleName} -DisplayName {RuleName} -Direction Outbound -LocalPort Any -Protocol TCP -Action Block -RemoteAddress {IPaddr}
-    def BanIP(self):
-        try:
-            run(
-                [
-                    "powershell",
-                    "New-NetFirewallRule",
-                    "-Name", f"{self.IPaddr}", "-DisplayName", f"{self.IPaddr}",
-                    "-Direction", "Outbound",
-                    "-LocalPort", "Any",
-                    "-Protocol", "TCP",
-                    "-Action", "Block",
-                    "-RemoteAddress", f"{self.IPaddr}/24"
-                ]
-            )
+def BanIP(IPaddr: str):
+    try:
+        run(
+            [
+                "powershell",
+                "New-NetFirewallRule",
+                "-Name", f"{IPaddr}", "-DisplayName", f"{IPaddr}",
+                "-Direction", "Outbound",
+                "-LocalPort", "Any",
+                "-Protocol", "TCP",
+                "-Action", "Block",
+                "-RemoteAddress", f"{self.IPaddr}/24"
+            ]
+        )
 
-        except Exception as ExceptionMessage:
-            print(f"There was a problem banning {self.IPaddr}: ")
-            print(ExceptionMessage)
+    except Exception as ExceptionMessage:
+        print(f"There was a problem banning {IPaddr}: ")
+        print(ExceptionMessage)
 
 
-    def UnbanIP(self):
-        try:
-            run(
-                [
-                    "powershell", "Remove-NetFirewallRule", "-Name", f"{self.IPaddr}"
-                ]
-            )
+def UnbanIP(IPaddr: str):
+    try:
+        run(
+            [
+                "powershell", "Remove-NetFirewallRule", "-Name", f"{IPaddr}"
+            ]
+        )
 
-        except Exception as ExceptionMessage:
-            print(f"There was a problem unbanning {self.IPaddr}: ")
-            print(ExceptionMessage)
+    except Exception as ExceptionMessage:
+        print(f"There was a problem unbanning {IPaddr}: ")
+        print(ExceptionMessage)
