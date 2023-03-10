@@ -1,5 +1,5 @@
-from sqlite3 import cursor, connect, commit, execute
-from datetime import strptime
+from sqlite3 import connect
+from datetime import datetime
 
 date_format = '%Y-%m-%d %H:%M:%S.%f'
 TableName = "sshjail"
@@ -29,7 +29,7 @@ def TableToDict(conn):
     rows = cur.execute(f"SELECT * FROM {TableName}")
     dict = {}
     for row in rows:
-        dict[row[0]]= strptime(row[1], date_format)
+        dict[row[0]]= datetime.strptime(row[1], date_format)
 
     return dict
 

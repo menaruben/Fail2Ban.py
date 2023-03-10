@@ -17,7 +17,7 @@ SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"        # path to sshd.log file
 F2BLOGS = "C:/ProgramData/ssh/logs/Fail2Ban.log"    # path to Fail2Ban.log file (this service)
 
 FailedLoginLimit = 3        # maximum amount of failed logins
-FailedLoginTime = 10        # timespan in which these failed logins have to appear (seconds)
+FailedLoginTime = 30        # timespan in which these failed logins have to appear (seconds)
 BanDuration = 90            # amount of time that host get banned for in seconds
 
 script_path = path.dirname(path.abspath(__name__))  # gets path to THIS file
