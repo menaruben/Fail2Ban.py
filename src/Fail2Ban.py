@@ -17,8 +17,8 @@ SSHLOGS = "C:/ProgramData/ssh/logs/sshd.log"        # path to sshd.log file
 F2BLOGS = "C:/ProgramData/ssh/logs/Fail2Ban.log"    # path to Fail2Ban.log file (this service)
 
 FailedLoginLimit = 3        # maximum amount of failed logins
-FailedLoginTime = 30        # timespan in which these failed logins have to appear (seconds)
-BanDuration = 90            # amount of time that host get banned for in seconds
+FailedLoginTime = 15        # timespan in which these failed logins have to appear (seconds)
+BanDuration = 25            # amount of time that host get banned for in seconds
 
 script_path = path.dirname(path.abspath(__name__))  # gets path to THIS file
 
@@ -48,53 +48,43 @@ def GetFailedHosts(FailedLines: list, MaxLogonAttemps: int) -> dict:
     FailedHosts = RemoveDuplicates(FailedHosts) # remove duplicates from FailedHosts array
     return FailedHosts
 
-# CheckBanAge unbans hosts if the FreeDate (release date) is less or equal to the current date
-def CheckBanAge(dict: dict):
-    for host, FreeDate in dict.items():
-        if FreeDate <= GetDate():                       # compares if FreeDate of every host inside the dictionary is less or equal to current date and if true then..
-            UnbanIP(host)                                   # unban the host
-            RemoveFromSQL(conn, host, str(dict[host]))  # remove host from sql table
-            del dict[host]                              # delete host from table
-            logging.debug(f"{host} unbanned and removed from sshjail")
-
 async def main():
     f = open(F2BLOGS, "w")                          # checks if F2BLOGS path exists and if not then it creates the file
     f.close()                                       # close filestream
+    CreateTableIfNotExists(conn)                    # creates the sshjail table if it doesnt already exist
 
     logging.info("Fail2Ban service started")
     PrevTimestamp = path.getmtime(SSHLOGS)          # store modification time of SSHLOGS
     PrevFileContent = ReadFile(SSHLOGS)             # store filecontent of SSHLOGS
 
-    if path.exists(f'{script_path}\src\{DbName}'):  # checks wether or not path exists and if true then..
-        SSHJail = TableToDict(conn)                 # it imports the data of the SQL table to the SSHJail dictionary (to prevent loss banned hosts after restart of service)
-    else:
-        cur.execute(f"CREATE TABLE IF NOT EXISTS {TableName} (host text, freedate text)")   # creates a table (if it doesn't already exist) called TableName with a host and freedate column
-        SSHJail = {}                                # dictionary with key (IP) and value (FreeDate)
-
     while True:
-        logging.debug("New While-True loop started")
-        await asyncio.sleep(FailedLoginTime)        # repeats this function every FailedLoginTime seconds
-        CurrentTimestamp = path.getmtime(SSHLOGS)   # store modification date of SSHLOGS
+        try: 
+            logging.debug("New While-True loop started")
+            await asyncio.sleep(FailedLoginTime)        # repeats this function every FailedLoginTime seconds
+            CurrentTimestamp = path.getmtime(SSHLOGS)   # store modification date of SSHLOGS
 
-        if CurrentTimestamp != PrevTimestamp:       # compare previous modification time to current and if they differ then..
-            PrevTimestamp = CurrentTimestamp        # the previous timestamp becomes the current timestamp
+            if CurrentTimestamp != PrevTimestamp:       # compare previous modification time to current and if they differ then..
+                PrevTimestamp = CurrentTimestamp        # the previous timestamp becomes the current timestamp
 
-            CurrentFileContent = ReadFile(SSHLOGS)  # get current FileContent of SSHLOGS
-            FileContentDiff = GetContentDiff(PrevFileContent, CurrentFileContent, SSHLOGS)  # gets difference between the previous and current content
-            PrevFileContent = CurrentFileContent    # previous file content is now equal to the current file content
+                CurrentFileContent = ReadFile(SSHLOGS)  # get current FileContent of SSHLOGS
+                FileContentDiff = GetContentDiff(PrevFileContent, CurrentFileContent, SSHLOGS)  # gets difference between the previous and current content
+                PrevFileContent = CurrentFileContent    # previous file content is now equal to the current file content
 
-            FailedLines = GetFailedLines(FileContentDiff, "Failed password for")    # GetFailedLines  returns and stores all failed lines inside file difference to FailedLines array
+                FailedLines = GetFailedLines(FileContentDiff, "Failed password for")    # GetFailedLines  returns and stores all failed lines inside file difference to FailedLines array
 
-            FailedHosts = GetFailedHosts(FailedLines, FailedLoginLimit)             # stores all failed hosts that exceeded the FailedLoginLimit to FailedHosts array
+                FailedHosts = GetFailedHosts(FailedLines, FailedLoginLimit)             # stores all failed hosts that exceeded the FailedLoginLimit to FailedHosts array
 
-            # For-Loop iterates through FailedHosts array and bans all the hosts
-            for host in FailedHosts:
-                BanIP(host)                                             # bans host
-                logging.debug(f"{host} banned")
-                SSHJail[host] = GetFreeDate(BanDuration)                # get release date for host
-                WriteToSQL(conn, host, str(GetFreeDate(BanDuration)))   # store banned host their freedate to sql table
+                # For-Loop iterates through FailedHosts array and bans all the hosts
+                for host in FailedHosts:
+                    BanIP(host)                                                 # bans host
+                    logging.debug(f"{host} banned")
+                    # SSHJail[host] = GetFreeDate(BanDuration)                  # get release date for host
+                    WriteToSQL(conn, host, DateToStr(GetFreeDate(BanDuration)))       # store banned host their freedate to sql table
 
-        CheckBanAge(SSHJail)                        # CheckBanAge unbans hosts if the FreeDate (release date) is less or equal to the current date
+            CheckBanAge(conn, FailedLoginTime)                         # CheckBanAge unbans hosts if the FreeDate (release date) is less or equal to the current date
+        
+        except Exception as e:
+            logging.debug(e)
 
 if __name__ == "__main__":
     asyncio.run(main())

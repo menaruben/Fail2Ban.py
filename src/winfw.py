@@ -13,7 +13,6 @@ logging.basicConfig(filename=F2BLOGS,
                     level=logging.DEBUG,
                     datefmt='%Y-%m-%d %H:%M:%S')
 
-# powershell New-NetFirewallRule -Name {RuleName} -DisplayName {RuleName} -Direction Outbound -LocalPort Any -Protocol TCP -Action Block -RemoteAddress {IPaddr}
 def BanIP(IPaddr: str):
     try:
         run(
@@ -21,11 +20,11 @@ def BanIP(IPaddr: str):
                 "powershell",
                 "New-NetFirewallRule",
                 "-Name", f"{IPaddr}", "-DisplayName", f"{IPaddr}",
-                "-Direction", "Outbound",
+                "-Direction", "Inbound",
                 "-LocalPort", "Any",
                 "-Protocol", "TCP",
                 "-Action", "Block",
-                "-RemoteAddress", f"{IPaddr}/24"
+                "-RemoteAddress", f"{IPaddr}/32"
             ]
         )
 
