@@ -36,13 +36,6 @@ def RemoveFromSQL(conn, host, freedate):
 
 # RemoveFromSQL(conn, "192.168.1.28", "20.07.2023")
 
-def TableToDict(conn):
-    cur = conn.cursor()
-    rows = cur.execute(f"SELECT * FROM {TableName}")
-    dict = {}
-    for row in rows:
-        dict[row[0]]= datetime.strptime(row[1], date_format)
-
     return dict
 
 def GetSQLTableContent(conn, TableName):

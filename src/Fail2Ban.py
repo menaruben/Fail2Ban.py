@@ -58,7 +58,7 @@ async def main():
     PrevFileContent = ReadFile(SSHLOGS)             # store filecontent of SSHLOGS
 
     while True:
-        try: 
+        try:
             logging.debug("New While-True loop started")
             await asyncio.sleep(FailedLoginTime)        # repeats this function every FailedLoginTime seconds
             CurrentTimestamp = path.getmtime(SSHLOGS)   # store modification date of SSHLOGS
@@ -78,11 +78,10 @@ async def main():
                 for host in FailedHosts:
                     BanIP(host)                                                 # bans host
                     logging.debug(f"{host} banned")
-                    # SSHJail[host] = GetFreeDate(BanDuration)                  # get release date for host
                     WriteToSQL(conn, host, DateToStr(GetFreeDate(BanDuration)))       # store banned host their freedate to sql table
 
             CheckBanAge(conn, FailedLoginTime)                         # CheckBanAge unbans hosts if the FreeDate (release date) is less or equal to the current date
-        
+
         except Exception as e:
             logging.debug(e)
 

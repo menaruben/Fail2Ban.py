@@ -7,10 +7,10 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 # 1. Checklist / To-Do
 - [x] bans IP addresses based on the amount of failed logins and timespan for a defined duration (tested)
 - [x] unbans IP adresses after checking the "age" or CreationTime of the firewall rule
-- [ ] runs as a windows service without any problem
-- [ ] add better logging for script
+- [x] runs as a windows service
+- [x] add better logging
 - [x] store firewall rules and unban date to sshjail table (Fail2Ban db using sqlite3) so that the SSHJail is saved even after restarting/stopping the script/service
-- [ ] installer (automate the creation of service)
+- [x] installer
 - [ ] full documentation for manual and automated installation/configuration with screenshots
 
 # 2 Known bugs/errors as of right now
@@ -30,7 +30,7 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 - Commandline tool: [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) (used for creating a service for our python script)
 
 ## sshd_config
-In order to have the sshd.log file the service needs you have to configure sshd. In the future this job will be done via the installer but for now we'll have to configure it manually. Go to ```%programdata%\ssh``` and open the ```sshd_config``` file. Now change the Logging part to this:
+In order to have the sshd.log file the service needs you have to configure sshd. This is automated when using the installer.The ```sshd_config``` file is inside ```%programdata%\ssh`` and should look like this::
 ```
 # Logging
 SyslogFacility LOCAL0
@@ -43,7 +43,8 @@ net start sshd
 ```
 
 # 4 Documentation
-... documentation for the PRECISE functionality is coming soon ...
-
 ## automated installation with [installer.py](installer.py)
-Please do not use the installer as of now since a lot of things inside the Fail2Ban.py script changed. I will be updating the installer as soon as possible. 
+The installer is used to configure the ```sshd.log``` file, installing [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) and creating the windows service. Just clone or download the repository and run:
+```
+python .\installer.py
+```

@@ -1,8 +1,7 @@
 # install latest nssm, extract zip, create service and run service
-# ! YOU MUST RUN THE INSTALLER AS ADMINISTRATOR
 import zipfile
 from os import path, system, chdir
-from subprocess import run
+from subprocess import run, call
 from sys import exec_prefix
 import fileinput
 try:
@@ -31,12 +30,22 @@ except Exception as e:
     print(e)
     print("Please configure sshd_config manually")
 
-pathtomain = f"src\\Fail2Ban.py"
-pythonpath = exec_prefix
-ServiceName = "Fail2Ban.py"
+# restart sshd service
+try:
+    call("net stop sshd")
+    call("net start sshd")
+
+except Exception as e:
+    print(e)
+    print("Please restart the sshd config manually\nwith net start/stop sshd")
+    exit()
+
+pythonpath = f"{exec_prefix}\\python.exe"
+pathtomain = f"{mainpath}\\src\\Fail2Ban.py"
+ServiceName = "Fail2Ban"
 NssmName = "nssm-2.24"
 DownloadNSSM = f"https://nssm.cc/release/{NssmName}.zip"
-nssm = f"{NssmName}\\win64\\nssm.exe"
+nssm = f"{mainpath}\\{NssmName}\\win64\\nssm.exe"
 
 if path.exists(f"{NssmName}") == False:
     try:
@@ -55,16 +64,11 @@ if path.exists(f"{NssmName}") == False:
         exit()
 
 try:
-    run(
-        [
-            f"{nssm}", "install", f"{ServiceName}",
-            f"{pythonpath}", f"{pathtomain}"
-        ]
-    )
+    run(f"{nssm} install {ServiceName} {pythonpath} {pathtomain}")
+
+    print(f"You can now start the {ServiceName} service!")
+    print("----------- installer is finished -----------")
 
 except Exception as e:
     print(e)
     print("Error creating service")
-
-print(f"You can now start the {ServiceName} service!")
-print("----------- installer is finished -----------")
