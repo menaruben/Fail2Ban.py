@@ -40,6 +40,7 @@ net start sshd
 ```
 
 # 4 Documentation
+Note that you have to change the frequency and the duration of ban in the [Fail2Ban.py](./src/Fail2Ban.py) to your needs before you run the installer. 
 ## automated installation with [installer.py](installer.py)
 The installer is used to configure the ```sshd.log``` file, installing [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) and creating the windows service. Just clone or download the repository and run:
 ```
@@ -64,4 +65,4 @@ Currently there is no uninstaller but if you really want to uninstall the Servic
 ```
 nssm.exe remove "Fail2Ban"
 ```
-If no errors occured the output should say ```Service "Fail2Ban" removed successfully!```. After uninstalling the service you will be able to delete the repository from you disk (Fail2Ban.log file stays inside ```%programdata%\ssh```). 
+If no errors occured the output should say ```Service "Fail2Ban" removed successfully!```. After uninstalling the service you will be able to delete the repository from you disk (Fail2Ban.log file stays inside ```%programdata%\ssh```).
