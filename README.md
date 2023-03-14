@@ -22,7 +22,8 @@ None :)
 - Module: re (used for splitting an array into fields)
 - Module: difflib (used for getting the difference between the previous and the current sshlogs)
 - Module: datetime (self explanatory)
-- Module: wget
+- Module: wget (installer)
+- Module: requests (installer)
 - Commandline tool: [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) (used for creating a service for our python script)
 
 ## sshd_config
