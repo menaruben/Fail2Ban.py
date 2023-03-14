@@ -13,12 +13,8 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 - [x] installer
 - [ ] full documentation for manual and automated installation/configuration with screenshots
 
-# 2 Known bugs/errors as of right now
-- Fail2Ban.py isn't able to start as a service.
-    - I am currently working on fixing this issue but for now I'm prioritizing the functionality of the script overall. I will fully focus on fixing this issue after making it run as expected.
-
-- Fail2Ban.py stops after banning the first IP-address.
-    - This probably occurs because I have been trying to save the FreeDate (which is a datetime) and save it to an xml file without converting it to a string beforehand. I am currently working on this error.
+# Known bugs/errors as of right now
+None :)
 
 # 3 Dependencies
 - python (of course)
