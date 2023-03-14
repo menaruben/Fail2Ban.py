@@ -27,7 +27,7 @@ None :)
 - Commandline tool: [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) (used for creating a service for our python script)
 
 ## sshd_config
-In order to have the sshd.log file the service needs you have to configure sshd. This is automated when using the installer.The ```sshd_config``` file is inside ```%programdata%\ssh`` and should look like this::
+In order to have the sshd.log file the service needs you have to configure sshd. This is automated when using the installer.The ```sshd_config``` file is inside ```%programdata%\ssh``` and should look like this::
 ```
 # Logging
 SyslogFacility LOCAL0
@@ -40,7 +40,7 @@ net start sshd
 ```
 
 # 4 Documentation
-Note that you have to change the frequency and the duration of ban in the [Fail2Ban.py](./src/Fail2Ban.py) to your needs before you run the installer. 
+Note that you have to change three important variables in the [Fail2Ban.py](./src/Fail2Ban.py) to your needs before you run the installer. 
 ## automated installation with [installer.py](installer.py)
 The installer is used to configure the ```sshd.log``` file, installing [NSSM - the Non-Sucking Service manager](https://nssm.cc/download) and creating the windows service. Just clone or download the repository and run:
 ```
