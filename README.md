@@ -11,7 +11,7 @@ This project is about my own implementation of a Fail2Ban (SSH) service for Wind
 - [x] add better logging
 - [x] store firewall rules and unban date to sshjail table (Fail2Ban db using sqlite3) so that the SSHJail is saved even after restarting/stopping the script/service
 - [x] installer
-- [ ] full documentation for manual and automated installation/configuration with screenshots
+- [ ] improve performance (instead of getting FileContetDiff every x seconds use a "tail -f"-like function to print out new lines and use counter dictionary with FirstOccurranceDate)
 
 # Known bugs/errors as of right now
 None :)
