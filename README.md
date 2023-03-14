@@ -45,3 +45,23 @@ The installer is used to configure the ```sshd.log``` file, installing [NSSM - t
 ```
 python .\installer.py
 ```
+```
+# Output
+The OpenSSH SSH Server service was stopped successfully.
+
+The OpenSSH SSH Server service is starting.
+The OpenSSH SSH Server service was started successfully.
+
+100% [............................................................................] 351793 / 351793Service "Fail2Ban" installed successfully!
+You can now start the Fail2Ban service!
+----------- installer is finished -----------
+```
+
+If  no errors occurred you can open the services panel with ```Windows Key > Services```. Press F to jump to the Services that start with the letter F. There should now be a Service called "Fail2Ban". To start it you can rightclick and click on Start. 
+
+## uninstalling Fail2Ban Service
+Currently there is no uninstaller but if you really want to uninstall the Service make sure to stop the service and open a terminal. Now go to the folder containing the ```nssm-24.4\win64\nssm.exe``` and type the following command:
+```
+nssm.exe remove "Fail2Ban"
+```
+If no errors occured the output should say ```Service "Fail2Ban" removed successfully!```. After uninstalling the service you will be able to delete the repository from you disk (Fail2Ban.log file stays inside ```%programdata%\ssh```). 
