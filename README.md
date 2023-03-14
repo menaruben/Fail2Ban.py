@@ -2,7 +2,7 @@
 This project is about my own implementation of a Fail2Ban (SSH) service for Windows 10+. 
 
 ## Flowchart / Functionality
-![](./imgs/fcfail2ban.png)
+![](./imgs/fail2ban-flowchart.jpg)
 
 # 1. Checklist / To-Do
 - [x] bans IP addresses based on the amount of failed logins and timespan for a defined duration (tested)
