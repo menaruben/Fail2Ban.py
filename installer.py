@@ -4,6 +4,13 @@ from os import path, system, chdir
 from subprocess import run, call
 from sys import exec_prefix
 import fileinput
+
+try:
+    import requests
+except:
+    system("pip install requests")
+    import requests
+
 try:
     import wget
 except:
@@ -12,6 +19,15 @@ except:
 
 mainpath = path.dirname(path.abspath(__name__))
 chdir(mainpath)
+
+def GetLatestRelease() -> str:
+    url = 'https://nssm.cc/download'
+    response = requests.get(url)
+    DownloadLink = response.text.split('nssm ')[1:]
+    Versions = [link.split(' ')[0] for link in DownloadLink]
+    LatestVersion = Versions[0]
+    LatestVersion = LatestVersion.replace("</a>", "")
+    return LatestVersion
 
 try:
     # Specify the filename and the lines to search and replace
@@ -43,7 +59,7 @@ except Exception as e:
 pythonpath = f"{exec_prefix}\\python.exe"
 pathtomain = f"{mainpath}\\src\\Fail2Ban.py"
 ServiceName = "Fail2Ban"
-NssmName = "nssm-2.24"
+NssmName = f"nssm-{GetLatestRelease()}"
 DownloadNSSM = f"https://nssm.cc/release/{NssmName}.zip"
 nssm = f"{mainpath}\\{NssmName}\\win64\\nssm.exe"
 
